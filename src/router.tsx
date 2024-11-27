@@ -2,14 +2,14 @@ import { Route, BrowserRouter, Routes } from 'react-router-dom'
 import AppLayout from '@/layouts/app-layout'
 import { lazy } from 'react'
 
-const UserForm = lazy(() => import('@/views/user-form'))
+const StayTunedPage = lazy(() => import('@/views/stay-tuned'))
 
 export default function Router() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<AppLayout />}>
-          <Route path="/aaa" element={<UserForm />}></Route>
+        <Route element={<AppLayout />}>
+          <Route index path="/" element={<StayTunedPage />}></Route>
         </Route>
       </Routes>
     </BrowserRouter>
