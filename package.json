@@ -1,7 +1,7 @@
 {
-  "name": "codatta-frontier-website",
+  "name": "dialects-voice-website",
   "version": "1.0.0",
-  "description": "Website for Codatta frontier platform",
+  "description": "Website for Codatta dialects voice website",
   "main": "index.js",
   "type": "module",
   "scripts": {
