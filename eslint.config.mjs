@@ -3,7 +3,6 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
 import prettierrRecommended from 'eslint-plugin-prettier/recommended'
-import noChinese from '@markof/eslint-plugin-no-chinese'
 
 export default tseslint.config(
   { ignores: ['dist'] },
@@ -11,7 +10,6 @@ export default tseslint.config(
     extends: [
       eslint.configs.recommended,
       prettierrRecommended,
-      noChinese.configs.recommended,
       ...tseslint.configs.recommended
     ],
     files: ['**/*.{ts,tsx,js,jsx,mjs,cjs}'],
