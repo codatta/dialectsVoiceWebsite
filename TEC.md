@@ -9,11 +9,7 @@
 - https://codesandbox.io/p/sandbox/simple-audio-recorder-react-audio-analyser-with-wavesurfer-x3str?file=%2Fsrc%2FApp.js
 - https://wavesurfer_recorder_typescript.surge.sh/
 
-## 2.竞品
+## 2. libs
 - https://labelstud.io/
 - http://www.voxforge.org/
 - https://commonvoice.mozilla.org/zh-CN/speak
-
-## 3.需求文档
-- https://chaintool.larksuite.com/wiki/ZL5Qwb0IgiSOEekWc0UuqRmTsW4?from=from_copylink
-- https://chaintool.larksuite.com/docx/SIC5dMfqko05NHx66UUuu2uOsre?from=from_copylink
