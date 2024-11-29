@@ -3,16 +3,20 @@ import { lazy } from 'react'
 
 import AppLayout from '@/layouts/app-layout'
 
-const StayTunedPage = lazy(() => import('@/views/stay-tuned'))
-const UserFormPage = lazy(() => import('@/views/user-form'))
+const UserFormPage = lazy(() => import('@/views/user'))
+const ReadPage = lazy(() => import('@/views/read-voice'))
+const MonologuePage = lazy(() => import('@/views/monologue-voice'))
+const ChatPage = lazy(() => import('@/views/chat-voice'))
 
 export default function Router() {
   return (
     <BrowserRouter>
       <Routes>
         <Route element={<AppLayout />}>
-          <Route index path="/" element={<StayTunedPage />}></Route>
           <Route path="/user" element={<UserFormPage />}></Route>
+          <Route index path="/read" element={<ReadPage />}></Route>
+          <Route index path="/monologue" element={<MonologuePage />}></Route>
+          <Route index path="/chat" element={<ChatPage />}></Route>
         </Route>
       </Routes>
     </BrowserRouter>
