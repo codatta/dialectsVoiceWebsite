@@ -10,14 +10,14 @@ import {
 } from 'react-vant'
 import { useState, useEffect } from 'react'
 
-import { useUser, saveUser, type TUser } from '@/stores/user-store'
+import { useUserStore, saveUser, type TUser } from '@/stores/user-store'
 import { AREA_LIST } from '@/config/area-config'
 import { DIALECT_MAP, type TDIALECT } from '@/config/dialect-config'
 
 export default function UserFormPage() {
   const [form] = Form.useForm()
   const [dialectList, setDialectList] = useState<TDIALECT[]>([])
-  const { user } = useUser()
+  const { user } = useUserStore()
 
   useEffect(() => {
     if (user) {
@@ -59,8 +59,8 @@ export default function UserFormPage() {
   }
 
   return (
-    <div className="bg-gray-50 py-12">
-      <div className="mx-auto max-w-4xl px-4">
+    <div className="bg-gray-50 px-4 py-6">
+      <div className="mx-auto max-w-4xl">
         <h1 className="mb-8 text-center text-2xl font-bold text-gray-800">
           用户资料
           <div className="mt-2 text-sm font-normal text-gray-600">

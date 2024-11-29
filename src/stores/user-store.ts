@@ -37,7 +37,7 @@ subscribeKey(userStore, 'user', (user) => {
   }
 })
 
-export function useUser() {
+export function useUserStore() {
   return useSnapshot(userStore)
 }
 
