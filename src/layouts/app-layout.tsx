@@ -4,7 +4,9 @@ export default function AppLayout() {
   return (
     <div className="flex min-h-screen flex-col bg-gray-50">
       <Header />
-      <Outlet />
+      <div className="flex-1 bg-gradient-to-t from-white from-20% to-[#f8f7f5]">
+        <Outlet />
+      </div>
     </div>
   )
 }
