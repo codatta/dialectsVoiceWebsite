@@ -14,27 +14,25 @@ import { useUserStore, saveUser, type TUser } from '@/stores/user-store'
 import { DIALECT_MAP, type TDIALECT } from '@/config/dialect-config'
 import { AREA_LIST } from '@/config/area-config'
 import api from '@/apis/frontiter.api'
+import { useNavigate } from 'react-router-dom'
+
 
 export default function UserFormPage() {
   const [form] = Form.useForm()
   const [dialectList, setDialectList] = useState<TDIALECT[]>([])
   const { user } = useUserStore()
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (user) {
-      // 初始化方言列表
-
       if (user.areaCode?.[0]) {
         setDialectList(DIALECT_MAP[user.areaCode?.[0]] || [])
       }
-
-      // 设置表单初始值
       form.setFieldsValue(user)
     }
   }, [user, form])
 
   const onAreaChange = (areaCode: [string, string, string]) => {
-    console.log('onAreaChange', areaCode)
     setDialectList(DIALECT_MAP[areaCode[0]] || [])
   }
 
@@ -60,6 +58,9 @@ export default function UserFormPage() {
     try {
       await api.saveUserInfo(userInfo)
       Toast.success('保存成功')
+      setTimeout(() => {
+        navigate('/read')
+      }, 2000)
     } catch (e) {
       console.error('Unknown error occurred', e)
       Toast.fail('保存失败')
@@ -67,7 +68,7 @@ export default function UserFormPage() {
   }
 
   return (
-    <div className="bg-gray-50 px-4 py-6">
+    <div className="bg-white px-4 py-6">
       <div className="mx-auto max-w-4xl">
         <h1 className="mb-8 text-center text-2xl font-bold text-gray-800">
           用户资料
@@ -78,11 +79,17 @@ export default function UserFormPage() {
 
         <Form
           form={form}
-          className="rounded-lg bg-white p-6 shadow"
+          className="rounded-lg bg-white"
           onFinish={onFinish}
           footer={
             <div style={{ margin: '16px 16px 0' }}>
-              <Button round nativeType="submit" type="primary" block>
+              <Button
+                disabled={!!user}
+                round
+                nativeType="submit"
+                type="primary"
+                block
+              >
                 保存
               </Button>
             </div>
@@ -95,20 +102,34 @@ export default function UserFormPage() {
               { required: true, message: '请填写手机号' },
               { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号格式' }
             ]}
+            className="flex items-center justify-center"
           >
-            <Input placeholder="请输入您的手机号" type="tel" prefix="" />
+            <Input
+              disabled={!!user}
+              placeholder="请输入您的手机号"
+              type="tel"
+              prefix=""
+            />
           </Form.Item>
+
           <Form.Item
             name="username"
             label="用户名"
+            className="flex items-center justify-center"
             rules={[{ required: true, message: '请填写用户名' }]}
           >
-            <Input placeholder="请输入您的用户名" maxLength={10} />
+            <Input
+              type="text"
+              disabled={!!user}
+              placeholder="请输入您的用户名"
+              maxLength={10}
+            />
           </Form.Item>
 
           <Form.Item
             name="age"
             label="年龄"
+            className="flex items-center justify-center"
             rules={[
               { required: true, message: '请填写年龄' },
               {
@@ -127,15 +148,26 @@ export default function UserFormPage() {
               }
             ]}
           >
-            <Input type="number" placeholder="请输入您的年龄" maxLength={2} />
+            <Input
+              disabled={!!user}
+              type="number"
+              placeholder="请输入您的年龄"
+              maxLength={2}
+            />
           </Form.Item>
 
           <Form.Item
             label="性别"
             name="gender"
+            className="flex items-center justify-center"
             rules={[{ required: true, message: '请选择性别' }]}
           >
-            <Radio.Group direction="horizontal" defaultValue="">
+            <Radio.Group
+              disabled={!!user}
+              direction="horizontal"
+              defaultValue=""
+              className="px-3 py-2"
+            >
               <Radio name="male">男</Radio>
               <Radio name="female">女</Radio>
             </Radio.Group>
@@ -143,7 +175,14 @@ export default function UserFormPage() {
           <Form.Item
             name="areaCode"
             label="地区"
-            rules={[{ required: true, message: '请选择地区' }]}
+            rules={[
+              {
+                required: true,
+                type: 'array',
+                len: 3,
+                message: '请完整选择省市区'
+              }
+            ]}
             className="flex items-center justify-center"
           >
             <Area
@@ -158,6 +197,7 @@ export default function UserFormPage() {
                 return (
                   <Field
                     label=""
+                    disabled={!!user}
                     value={selectRows.map((row) => row?.text).join(',')}
                     onClick={() => actions.open()}
                   />
@@ -165,10 +205,17 @@ export default function UserFormPage() {
               }}
             </Area>
           </Form.Item>
-          <Form.Item name="dialects" label="选择方言">
+
+          <Form.Item
+            name="dialects"
+            label="选择方言"
+            className="flex items-center justify-center"
+            rules={[{ required: true, message: '请选择方言' }]}
+          >
             <Selector
               options={dialectList}
               className=""
+              disabled={!!user}
               style={{
                 '--rv-selector-margin':
                   'var(--rv-padding-xs) var(--rv-padding-xs)'
