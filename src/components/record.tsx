@@ -15,7 +15,7 @@ export default function Record({
 }: {
   onRecordStart?: () => void
   onRecordEnd?: (audio: TAudio) => void
-  onRecordNext?: () => void
+  onRecordNext?: (blob: Blob) => void
   recordIndex: number
 }) {
   const wavesurferObject = useRef<WaveSurfer>()
@@ -65,8 +65,7 @@ export default function Record({
   }
 
   const onNext = () => {
-    wavesurferObject.current?.empty()
-    onRecordNext?.()
+    onRecordNext?.(blobRef.current!)
   }
 
   useEffect(() => {
@@ -93,6 +92,7 @@ export default function Record({
 
     record.on('record-end', (blob) => {
       blobRef.current = blob
+      const recordedUrl = URL.createObjectURL(blob)
       setIsRecording(false)
       setRecordedUrl(recordedUrl)
       onRecordEnd?.({
@@ -111,6 +111,7 @@ export default function Record({
   }, [])
 
   useEffect(() => {
+    wavesurferObject.current?.empty()
     setRecordedUrl('')
   }, [recordIndex])
 
