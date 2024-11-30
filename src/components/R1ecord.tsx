@@ -3,8 +3,8 @@ import { MicIcon, Square } from 'lucide-react'
 import { useWavesurfer } from '@wavesurfer/react'
 import RecordPlugin from 'wavesurfer.js/dist/plugins/record.esm.js'
 
-import { cn } from '@/lib/utils'
 import { type TAudio } from '@/stores/record-store'
+import { cn } from '@/lib/utils'
 
 export default function Record({
   onRecordStart,
