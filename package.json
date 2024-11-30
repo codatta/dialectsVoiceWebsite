@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/codatta/codattaFrontierWebsite#readme",
   "dependencies": {
+    "@cloudbase/js-sdk": "^1.7.2",
     "@commitlint/config-conventional": "^19.6.0",
     "@commitlint/cz-commitlint": "^19.5.0",
     "@vant/area-data": "^2.0.0",

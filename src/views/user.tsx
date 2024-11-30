@@ -11,8 +11,9 @@ import {
 import { useState, useEffect } from 'react'
 
 import { useUserStore, saveUser, type TUser } from '@/stores/user-store'
-import { AREA_LIST } from '@/config/area-config'
 import { DIALECT_MAP, type TDIALECT } from '@/config/dialect-config'
+import { AREA_LIST } from '@/config/area-config'
+import api from '@/apis/frontiter.api'
 
 export default function UserFormPage() {
   const [form] = Form.useForm()
@@ -37,7 +38,7 @@ export default function UserFormPage() {
     setDialectList(DIALECT_MAP[areaCode[0]] || [])
   }
 
-  const onFinish = (values: TUser) => {
+  const onFinish = async (values: TUser) => {
     const [provinceCode, cityCode, countyCode] = values.areaCode || []
     const areaName: [string, string, string] = [
       AREA_LIST.province_list[provinceCode],
@@ -45,7 +46,7 @@ export default function UserFormPage() {
       AREA_LIST.county_list[countyCode]
     ]
 
-    saveUser({
+    const userInfo = {
       tel: values.tel,
       username: values.username,
       age: Number(values.age),
@@ -53,9 +54,16 @@ export default function UserFormPage() {
       areaCode: values.areaCode,
       areaName: areaName,
       dialect: values.dialect
-    })
+    }
+    saveUser(userInfo)
 
-    Toast.success('保存成功')
+    try {
+      await api.saveUserInfo(userInfo)
+      Toast.success('保存成功')
+    } catch (e) {
+      console.error('Unknown error occurred', e)
+      Toast.fail('保存失败')
+    }
   }
 
   return (
