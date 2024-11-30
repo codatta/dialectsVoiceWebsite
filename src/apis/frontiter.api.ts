@@ -1,6 +1,3 @@
-import { AxiosInstance } from 'axios'
-
-import request from './request'
 import { db } from './cloudbase'
 import commonApi from './common.api'
 
@@ -11,7 +8,7 @@ const USER_COLLECTION = 'dialects-label-user'
 const DIALECTS_COLLECTION = 'dialects-label'
 
 class frontier {
-  constructor(private request: AxiosInstance) {}
+  constructor() {}
 
   async saveUserInfo(user: TUser) {
     // Check if user with tel exists
@@ -60,4 +57,4 @@ class frontier {
   }
 }
 
-export default new frontier(request)
+export default new frontier()

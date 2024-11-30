@@ -16,7 +16,6 @@ import { AREA_LIST } from '@/config/area-config'
 import api from '@/apis/frontiter.api'
 import { useNavigate } from 'react-router-dom'
 
-
 export default function UserFormPage() {
   const [form] = Form.useForm()
   const [dialectList, setDialectList] = useState<TDIALECT[]>([])
