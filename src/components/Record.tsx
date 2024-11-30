@@ -9,11 +9,13 @@ import { type TAudio } from '@/stores/record-store'
 export default function Record({
   onRecordStart,
   onRecordEnd,
-  onRecordNext
+  onRecordNext,
+  recordIndex
 }: {
   onRecordStart?: () => void
   onRecordEnd?: (audio: TAudio) => void
   onRecordNext?: () => void
+  recordIndex: number
 }) {
   const containerRef = useRef(null)
   const recordRef = useRef<RecordPlugin | null>(null)
@@ -66,7 +68,6 @@ export default function Record({
   }
 
   const onNext = () => {
-    setRecordedUrl('')
     onRecordNext?.()
   }
 
@@ -105,6 +106,10 @@ export default function Record({
     }
   }, [wavesurfer, isReady])
 
+  useEffect(() => {
+    setRecordedUrl('')
+  }, [recordIndex])
+
   return (
     <>
       <div ref={containerRef}></div>
@@ -129,15 +134,6 @@ export default function Record({
         </div>
       </div>
       <div className="mt-6 flex items-center justify-center gap-6">
-        {/* <button
-          onClick={onResetRecord}
-          disabled={!recordedAudioRef.current.blob}
-          className={
-            'flex h-10 w-20 items-center justify-center rounded-full bg-gray-100 text-sm text-gray-600 hover:bg-gray-200 disabled:opacity-50'
-          }
-        >
-          重录
-        </button> */}
         <button
           onClick={onTogglePlay}
           disabled={!recoredeUrl}

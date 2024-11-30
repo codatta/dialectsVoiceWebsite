@@ -36,7 +36,13 @@ export default function Page() {
   }
 
   const onRecordNext = () => {
-    recordActions.nextRecord('read')
+    if (recordIndex === list.length - 1) {
+      console.log('on end')
+    } else {
+      console.log('on end')
+
+      recordActions.nextRecord('read')
+    }
   }
 
   return (
@@ -51,6 +57,7 @@ export default function Page() {
           onRecordStart={() => setIsRecording(true)}
           onRecordEnd={onRecordEnd}
           onRecordNext={onRecordNext}
+          recordIndex={recordIndex}
         />
       </div>
     </div>
