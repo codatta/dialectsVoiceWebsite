@@ -4,25 +4,28 @@ import { useWavesurfer } from '@wavesurfer/react'
 import RecordPlugin from 'wavesurfer.js/dist/plugins/record.esm.js'
 
 import { cn } from '@/lib/utils'
+import { type TAudio } from '@/stores/record-store'
 
 export default function Record({
-  recordedUrl = '',
-  onRecordingChange,
-  onNext
+  onRecordStart,
+  onRecordEnd,
+  onRecordNext,
+  isLast
 }: {
-  recordedUrl?: string
-  onRecordingChange?: (isRecording: boolean) => void
-  onNext?: () => void
+  onRecordStart?: () => void
+  onRecordEnd?: (audio: TAudio) => void
+  onRecordNext?: () => void
+  isLast?: boolean
 }) {
   const containerRef = useRef(null)
   const recordRef = useRef<RecordPlugin | null>(null)
   const deviceIdRef = useRef<string>('')
-  const recordedUrlRef = useRef<string>('')
+  const [recoredeUrl, setRecordedUrl] = useState<string>('')
   const [isRecording, setIsRecording] = useState<boolean>(false)
 
   const { wavesurfer, isReady, isPlaying } = useWavesurfer({
     container: containerRef,
-    url: recordedUrlRef.current,
+    url: recoredeUrl,
     waveColor: 'purple',
     height: 100
   })
@@ -47,10 +50,6 @@ export default function Record({
   const onTogglePlay = () => {
     wavesurfer && wavesurfer.playPause()
   }
-  const onResetRecord = () => {
-    wavesurfer && wavesurfer.empty()
-    recordedUrlRef.current = ''
-  }
   const onToggleRecord = async () => {
     console.log('onToggleRecord', recordRef.current)
 
@@ -64,11 +63,16 @@ export default function Record({
     const deviceId = await getAvailableAudioDevice()
     recordRef.current.startRecording({ deviceId }).then(() => {
       console.log('recording: ', deviceId)
+      //   recordRef.current?.startMic()
     })
   }
 
+  const onNext = () => {
+    setRecordedUrl('')
+    onRecordNext?.()
+  }
+
   useEffect(() => {
-    console.log('isReady', isReady, wavesurfer)
     if (wavesurfer && !recordRef.current) {
       const record = wavesurfer.registerPlugin(
         RecordPlugin.create({
@@ -79,13 +83,20 @@ export default function Record({
 
       record.on('record-end', (blob) => {
         const recordedUrl = URL.createObjectURL(blob)
-        console.log('recordedUrl: ', recordedUrl)
-        recordedUrlRef.current = recordedUrl
+        console.log('recordedUrl 1: ', recordedUrl)
+
         setIsRecording(false)
+        setRecordedUrl(recordedUrl)
+        onRecordEnd?.({
+          recordedUrl,
+          blob
+        })
       })
 
       record.on('record-start', () => {
         setIsRecording(true)
+        setRecordedUrl('')
+        onRecordStart?.()
       })
 
       record.on('record-progress', (progress: number) => {
@@ -96,19 +107,11 @@ export default function Record({
     }
   }, [wavesurfer, isReady])
 
-  useEffect(() => {
-    recordedUrlRef.current = recordedUrl
-  }, [recordedUrl])
-
-  useEffect(() => {
-    onRecordingChange?.(isRecording)
-  }, [isRecording, onRecordingChange])
-
   return (
     <>
       <div ref={containerRef}></div>
       <div className="flex items-center justify-center gap-6">
-        <div className="relative h-[65px] w-[65px]">
+        <div className="relative my-6 h-[65px] w-[65px]">
           <div
             className={cn(
               'absolute inset-0 -left-[7.5px] -top-[7.5px] h-[80px] w-[80px] rounded-full bg-gradient-to-r from-[#f89096] to-[#b1b4e5] opacity-50 blur-sm transition-all',
@@ -128,25 +131,25 @@ export default function Record({
         </div>
       </div>
       <div className="mt-6 flex items-center justify-center gap-6">
-        <button
+        {/* <button
           onClick={onResetRecord}
-          disabled={!recordedUrlRef.current}
+          disabled={!recordedAudioRef.current.blob}
           className={
             'flex h-10 w-20 items-center justify-center rounded-full bg-gray-100 text-sm text-gray-600 hover:bg-gray-200 disabled:opacity-50'
           }
         >
           重录
-        </button>
+        </button> */}
         <button
           onClick={onTogglePlay}
-          disabled={!recordedUrlRef.current}
+          disabled={!recoredeUrl}
           className="flex h-10 w-20 items-center justify-center rounded-full bg-gray-100 text-sm text-gray-600 hover:bg-gray-200 disabled:opacity-50"
         >
           {isPlaying ? '暂停' : '试听'}
         </button>
         <button
           onClick={onNext}
-          disabled={!recordedUrlRef.current}
+          disabled={!recoredeUrl}
           className="flex h-10 w-20 items-center justify-center rounded-full bg-[#FF4F5E] text-sm text-white hover:bg-[#ff3545] disabled:opacity-50"
         >
           下一个
