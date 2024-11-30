@@ -9,13 +9,11 @@ import { type TAudio } from '@/stores/record-store'
 export default function Record({
   onRecordStart,
   onRecordEnd,
-  onRecordNext,
-  isLast
+  onRecordNext
 }: {
   onRecordStart?: () => void
   onRecordEnd?: (audio: TAudio) => void
   onRecordNext?: () => void
-  isLast?: boolean
 }) {
   const containerRef = useRef(null)
   const recordRef = useRef<RecordPlugin | null>(null)

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Swiper, SwiperInstance } from 'react-vant'
 
 import Record from '@/components/record'
@@ -51,7 +51,6 @@ export default function Page() {
           onRecordStart={() => setIsRecording(true)}
           onRecordEnd={onRecordEnd}
           onRecordNext={onRecordNext}
-          recordedUrl={current?.audio?.recordedUrl}
         />
       </div>
     </div>
