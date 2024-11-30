@@ -31,6 +31,7 @@
     "@commitlint/config-conventional": "^19.6.0",
     "@commitlint/cz-commitlint": "^19.5.0",
     "@vant/area-data": "^2.0.0",
+    "@wavesurfer/react": "^1.0.7",
     "axios": "^1.7.7",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -47,7 +48,8 @@
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "tailwindcss-animated": "^1.1.2",
-    "valtio": "^2.1.2"
+    "valtio": "^2.1.2",
+    "wavesurfer.js": "^7.8.9"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",

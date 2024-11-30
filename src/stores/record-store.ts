@@ -5,15 +5,26 @@ export type TRecordItem = {
   text: string
   audioUrl: string
 }
+export type TRecord = {
+  list: TRecordItem[]
+  index: number
+  total: number
+}
+
+const initialRecord = {
+  list: [],
+  index: 0,
+  total: 0
+}
 
 const recordStore = proxy<{
-  read: TRecordItem[]
-  monologue: TRecordItem[]
-  chat: TRecordItem[]
+  read: TRecord
+  monologue: TRecord
+  chat: TRecord
 }>({
-  read: [],
-  monologue: [],
-  chat: []
+  read: { ...initialRecord },
+  monologue: { ...initialRecord },
+  chat: { ...initialRecord }
 })
 
 export function useRecordStore() {
@@ -22,7 +33,11 @@ export function useRecordStore() {
 
 export function resetRecord(type: TRecordType | 'all') {
   if (type !== 'all') {
-    recordStore[type] = []
+    recordStore[type] = { ...initialRecord }
+  } else {
+    recordStore['read'] = { ...initialRecord }
+    recordStore['monologue'] = { ...initialRecord }
+    recordStore['chat'] = { ...initialRecord }
   }
 }
 
@@ -31,11 +46,16 @@ export function modifyRecord(
   index: number,
   data: TRecordItem
 ) {
-  if (recordStore[type][index]) {
-    recordStore[type][index] = { ...recordStore[type][index], ...data }
+  if (recordStore[type]['list'][index]) {
+    recordStore[type]['list'][index] = {
+      ...recordStore[type]['list'][index],
+      ...data
+    }
+    recordStore[type].index = index
   }
 }
 
 export function addRecord(type: TRecordType, data: TRecordItem) {
-  recordStore[type].push(data)
+  recordStore[type].list.push(data)
+  recordStore[type].index = recordStore[type].list.length - 1
 }
