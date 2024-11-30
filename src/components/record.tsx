@@ -14,12 +14,13 @@ export default function Record({
 }: {
   onRecordStart?: () => void
   onRecordEnd?: (audio: TAudio) => void
-  onRecordNext?: () => void
+  onRecordNext?: (blob: Blob) => void
   recordIndex: number
 }) {
   const containerRef = useRef(null)
   const recordRef = useRef<RecordPlugin | null>(null)
   const deviceIdRef = useRef<string>('')
+  const blobRef = useRef<Blob>()
   const [recoredeUrl, setRecordedUrl] = useState<string>('')
   const [isRecording, setIsRecording] = useState<boolean>(false)
 
@@ -68,7 +69,7 @@ export default function Record({
   }
 
   const onNext = () => {
-    onRecordNext?.()
+    onRecordNext?.(blobRef.current!)
   }
 
   useEffect(() => {
@@ -84,6 +85,7 @@ export default function Record({
         const recordedUrl = URL.createObjectURL(blob)
         console.log('recordedUrl 1: ', recordedUrl)
 
+        blobRef.current = blob
         setIsRecording(false)
         setRecordedUrl(recordedUrl)
         onRecordEnd?.({
@@ -104,7 +106,7 @@ export default function Record({
 
       recordRef.current = record
     }
-  }, [wavesurfer, isReady])
+  }, [wavesurfer, isReady, onRecordEnd, onRecordStart])
 
   useEffect(() => {
     setRecordedUrl('')

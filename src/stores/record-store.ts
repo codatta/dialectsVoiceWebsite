@@ -97,10 +97,14 @@ export function updateRecord(
 }
 
 export function nextRecord(type: TRecordType, index?: number) {
-  recordStore[type].index = Math.min(
+  const nextIndex = Math.min(
     recordStore[type].list.length - 1,
     index ?? recordStore[type].index + 1
   )
+
+  if (recordStore[type].index !== nextIndex) {
+    recordStore[type].index = nextIndex
+  }
 }
 
 export function initRecord(type: TRecordType, { texts }: { texts: string[] }) {

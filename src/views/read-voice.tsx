@@ -8,13 +8,14 @@ import { useUserStore } from '@/stores/user-store'
 import { TAudio, useRecordStore, recordActions } from '@/stores/record-store'
 
 import { READ } from '@/config/read-config'
+import api from '@/apis/frontiter.api'
 
 export default function Page() {
-  const { user } = useUserStore()
   const [isRecording, setIsRecording] = useState<boolean>(false)
   const {
-    read: { current, list, index: recordIndex }
+    read: { current: currentRecord, list, index: recordIndex }
   } = useRecordStore()
+  const { user } = useUserStore()
 
   useEffect(() => {
     recordActions.initRecord('read', {
@@ -23,8 +24,8 @@ export default function Page() {
   }, [user?.areaCode])
 
   useEffect(() => {
-    console.log('read', current)
-  }, [current])
+    console.log('read', currentRecord)
+  }, [currentRecord])
 
   const onRecordEnd = (audio: TAudio) => {
     setIsRecording(false)
@@ -35,14 +36,19 @@ export default function Page() {
     console.log('onRecordEnd', audio, recordIndex)
   }
 
-  const onRecordNext = () => {
+  const onRecordNext = (audioBlob: Blob) => {
     if (recordIndex === list.length - 1) {
       console.log('on end')
-    } else {
-      console.log('on end')
-
-      recordActions.nextRecord('read')
     }
+
+    api.saveRecord({
+      tel: user!.tel,
+      dialects: [...user!.dialects],
+      text: currentRecord.text!,
+      audioBlob,
+      recordType: 'read'
+    })
+    recordActions.nextRecord('read')
   }
 
   return (

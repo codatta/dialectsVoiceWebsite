@@ -53,7 +53,7 @@ export default function UserFormPage() {
       gender: values.gender,
       areaCode: values.areaCode,
       areaName: areaName,
-      dialect: values.dialect
+      dialects: values.dialects
     }
     saveUser(userInfo)
 
@@ -165,7 +165,7 @@ export default function UserFormPage() {
               }}
             </Area>
           </Form.Item>
-          <Form.Item name="dialect" label="选择方言">
+          <Form.Item name="dialects" label="选择方言">
             <Selector
               options={dialectList}
               className=""

@@ -6,21 +6,24 @@ import RecordTip from '@/components/record-tip'
 
 import { TAudio, useRecordStore, recordActions } from '@/stores/record-store'
 
+import api from '@/apis/frontiter.api'
+import { useUserStore } from '@/stores/user-store'
+
 export default function Page() {
   const [text, setText] = useState<string>('')
   const [isRecording, setIsRecording] = useState<boolean>(false)
   const {
-    monologue: { current, list, index: recordIndex }
+    monologue: { list, index: recordIndex }
   } = useRecordStore()
+  const { user } = useUserStore()
 
   useEffect(() => {
     recordActions.initRecord('monologue', {
-      texts: Array(8).fill('')
+      texts: Array(10).fill('')
     })
   }, [])
 
   useEffect(() => {
-    console.log('monologue', current)
     setText('')
   }, [recordIndex])
 
@@ -34,7 +37,7 @@ export default function Page() {
     console.log('onRecordEnd monologue', audio, recordIndex)
   }
 
-  const onRecordNext = () => {
+  const onRecordNext = (audioBlob: Blob) => {
     if (!text.trim()) {
       Toast.fail('请完成对话内容编辑')
       return
@@ -42,10 +45,17 @@ export default function Page() {
 
     if (recordIndex === list.length - 1) {
       console.log('on end')
-    } else {
-      console.log('on end')
-      recordActions.nextRecord('monologue')
     }
+
+    api.saveRecord({
+      tel: user!.tel,
+      dialects: [...user!.dialects],
+      recordType: 'monologue',
+      text,
+      audioBlob
+    })
+
+    recordActions.nextRecord('monologue')
   }
 
   return (

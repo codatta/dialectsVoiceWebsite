@@ -8,7 +8,7 @@ export interface TUser {
   age: number
   areaCode: [string, string, string] // [省、市、区]
   areaName?: [string, string, string]
-  dialect: string // 方言
+  dialects: string[] // 方言
 }
 
 const STORAGE_KEY = 'xny_user_store'
@@ -68,6 +68,6 @@ function isCompleteUser(user: Partial<TUser>): user is TUser {
     typeof user.age === 'number' &&
     Array.isArray(user.areaCode) &&
     user.areaCode.length === 3 &&
-    user.dialect
+    user.dialects
   )
 }
