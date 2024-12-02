@@ -6,7 +6,7 @@ import AppLayout from '@/layouts/app-layout'
 const UserFormPage = lazy(() => import('@/views/user'))
 const ReadPage = lazy(() => import('@/views/read-voice'))
 const MonologuePage = lazy(() => import('@/views/monologue-voice'))
-const ChatPage = lazy(() => import('@/views/chat-voice'))
+// const ChatPage = lazy(() => import('@/views/chat-voice'))
 
 export default function Router() {
   return (
@@ -16,7 +16,7 @@ export default function Router() {
           <Route path="/user" element={<UserFormPage />}></Route>
           <Route index path="/read" element={<ReadPage />}></Route>
           <Route index path="/monologue" element={<MonologuePage />}></Route>
-          <Route index path="/chat" element={<ChatPage />}></Route>
+          {/* <Route index path="/chat" element={<ChatPage />}></Route> */}
         </Route>
       </Routes>
     </BrowserRouter>

@@ -22,6 +22,7 @@ export default function Record({
   const wavesurferObject = useRef<WaveSurfer>()
   const recordRef = useRef<RecordPlugin | null>(null)
   const deviceIdRef = useRef<string>('')
+  const recordDurationRef = useRef<number>(0)
   const [recordedUrl, setRecordedUrl] = useState<string>('')
   const [isRecording, setIsRecording] = useState<boolean>(false)
   const [isPlaying, setIsPlaying] = useState<boolean>(false)
@@ -71,10 +72,10 @@ export default function Record({
 
     wavesurferObject.current = WaveSurfer.create({
       container: '#wave-container',
-      url: recordedUrl,
       waveColor: '#f89096',
       progressColor: '#b1b4e5',
-      height: 100
+      height: 100,
+      url: recordedUrl
     })
 
     wavesurferObject.current.on('play', () => {
@@ -102,21 +103,31 @@ export default function Record({
       })
     ) as RecordPlugin
 
+    record.on('record-start', () => {
+      setIsRecording(true)
+      setRecordedUrl('')
+      onRecordStart?.()
+    })
+
     record.on('record-end', (blob) => {
       blobRef.current = blob
       const recordedUrl = URL.createObjectURL(blob)
       setIsRecording(false)
       setRecordedUrl(recordedUrl)
+
+      if (recordDurationRef.current < 1) {
+        console.warn('录音时间太短', recordDurationRef.current)
+      }
+
       onRecordEnd?.({
         recordedUrl,
         blob
       })
     })
 
-    record.on('record-start', () => {
-      setIsRecording(true)
-      setRecordedUrl('')
-      onRecordStart?.()
+    record.on('record-progress', (time) => {
+      recordDurationRef.current = Math.floor(time / 100) / 10
+      console.log('progress', recordDurationRef.current)
     })
 
     recordRef.current = record

@@ -9,6 +9,7 @@ export interface TUser {
   areaCode: [string, string, string] // [省、市、区]
   areaName?: [string, string, string]
   dialects: string[] // 方言
+  invitationCode: string
 }
 
 const STORAGE_KEY = 'xny_user_store'
@@ -27,6 +28,8 @@ const userStore = proxy<{
     return !!this.user?.tel
   }
 })
+
+console.log(userStore.user?.dialects)
 
 // Subscribe to user changes and save to localStorage
 subscribeKey(userStore, 'user', (user) => {

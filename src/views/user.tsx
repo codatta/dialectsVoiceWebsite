@@ -53,7 +53,8 @@ export default function UserFormPage() {
       gender: values.gender,
       areaCode: values.areaCode,
       areaName: areaName,
-      dialects: values.dialects
+      dialects: values.dialects,
+      invitationCode: values.invitationCode
     }
 
     const confirm = await Dialog.confirm({
@@ -108,6 +109,24 @@ export default function UserFormPage() {
           }
         >
           <Form.Item
+            name="invitationCode"
+            label="邀请码"
+            rules={[
+              { required: true, message: '请输入邀请码' },
+              { pattern: /^\d{5}$/, message: '请输入5位邀请码' }
+            ]}
+            className="flex items-center justify-center"
+          >
+            <Input
+              disabled={isFormFinished}
+              placeholder="请输入您的团长邀请码"
+              type="tel"
+              prefix=""
+              maxLength={5}
+            />
+          </Form.Item>
+
+          <Form.Item
             name="tel"
             label="手机号"
             rules={[
@@ -121,6 +140,7 @@ export default function UserFormPage() {
               placeholder="请输入您的手机号"
               type="tel"
               prefix=""
+              maxLength={11}
             />
           </Form.Item>
 
@@ -217,11 +237,10 @@ export default function UserFormPage() {
               }}
             </Area>
           </Form.Item>
-
           <Form.Item
             name="dialects"
             label="选择方言"
-            className="flex items-center justify-center"
+            className={`flex items-center justify-center ${!dialectList?.length && 'hidden'}`}
             rules={[{ required: true, message: '请选择方言' }]}
           >
             <Selector

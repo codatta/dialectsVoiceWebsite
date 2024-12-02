@@ -33,8 +33,8 @@ function Header() {
       url: '/read',
       label: '朗读'
     },
-    { url: '/monologue', label: '自由录音' },
-    { url: '/chat', label: '自由对话' },
+    { url: '/monologue', label: '录音' },
+    // { url: '/chat', label: '自由对话' },
     { url: '/user', label: '我的' }
   ]
 

@@ -66,13 +66,13 @@ export default function Page() {
       </div>
 
       <div className="w-full">
-        <RecordTip type={isRecording ? 'recording' : 'start'} />
         <Record
           onRecordStart={() => setIsRecording(true)}
           onRecordEnd={onRecordEnd}
           onRecordNext={onRecordNext}
           recordIndex={recordIndex}
         />
+        <RecordTip type={isRecording ? 'recording' : 'start'} />
       </div>
     </div>
   )

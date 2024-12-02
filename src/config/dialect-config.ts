@@ -36,3 +36,9 @@ export const DIALECT_MAP: Record<string, TDIALECT[]> = {
     { value: 'qiannan_hua', label: '黔南话' }
   ]
 }
+
+export const DIALECT_LABEL_MAP = {
+  tianjin_hua: '天津话',
+  beifang_guanhua: '北方官话',
+  dongbei_guanhua: '东北官话'
+}
