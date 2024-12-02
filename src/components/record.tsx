@@ -67,6 +67,8 @@ export default function Record({
   }
 
   useEffect(() => {
+    if (wavesurferObject.current) return
+
     wavesurferObject.current = WaveSurfer.create({
       container: '#wave-container',
       url: recordedUrl,
@@ -118,7 +120,7 @@ export default function Record({
     })
 
     recordRef.current = record
-  }, [])
+  }, [wavesurferObject])
 
   useEffect(() => {
     wavesurferObject.current?.empty()
@@ -128,7 +130,14 @@ export default function Record({
   return (
     <>
       <div id="wave-container"></div>
-      <div className="flex items-center justify-center gap-6">
+      <div className="flex items-center justify-between gap-6">
+        <button
+          onClick={onTogglePlay}
+          disabled={!recordedUrl}
+          className="flex h-10 w-20 items-center justify-center rounded-full bg-gray-100 text-sm text-gray-600 hover:bg-gray-200 disabled:opacity-50"
+        >
+          {isPlaying ? '暂停' : '试听'}
+        </button>
         <div className="relative my-10 h-[65px] w-[65px] select-none">
           <div
             className={cn(
@@ -158,17 +167,6 @@ export default function Record({
             )}
           </button>
         </div>
-      </div>
-      <div className="mt-6 flex items-center justify-center gap-6">
-        <button
-          onClick={onTogglePlay}
-          //   onTouchStart={onToggleRecord}
-          //   onTouchEnd={onToggleRecord}
-          disabled={!recordedUrl}
-          className="flex h-10 w-20 items-center justify-center rounded-full bg-gray-100 text-sm text-gray-600 hover:bg-gray-200 disabled:opacity-50"
-        >
-          {isPlaying ? '暂停' : '试听'}
-        </button>
         <button
           onClick={onNext}
           disabled={!recordedUrl}

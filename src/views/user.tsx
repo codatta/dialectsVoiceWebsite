@@ -6,15 +6,16 @@ import {
   Area,
   Field,
   Selector,
-  Toast
+  Toast,
+  Dialog
 } from 'react-vant'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { useUserStore, saveUser, type TUser } from '@/stores/user-store'
 import { DIALECT_MAP, type TDIALECT } from '@/config/dialect-config'
 import { AREA_LIST } from '@/config/area-config'
 import api from '@/apis/frontiter.api'
-import { useNavigate } from 'react-router-dom'
 
 export default function UserFormPage() {
   const [form] = Form.useForm()
@@ -30,6 +31,8 @@ export default function UserFormPage() {
       form.setFieldsValue(user)
     }
   }, [user, form])
+
+  const isFormFinished = useMemo(() => !!user?.tel, [user])
 
   const onAreaChange = (areaCode: [string, string, string]) => {
     setDialectList(DIALECT_MAP[areaCode[0]] || [])
@@ -52,17 +55,27 @@ export default function UserFormPage() {
       areaName: areaName,
       dialects: values.dialects
     }
-    saveUser(userInfo)
 
-    try {
-      await api.saveUserInfo(userInfo)
-      Toast.success('保存成功')
-      setTimeout(() => {
-        navigate('/read')
-      }, 2000)
-    } catch (e) {
-      console.error('Unknown error occurred', e)
-      Toast.fail('保存失败')
+    const confirm = await Dialog.confirm({
+      title: '提示',
+      message: '用户资料保存后不可更改，请再次确认',
+      confirmButtonText: '确认保存',
+      cancelButtonText: '返回修改'
+    })
+
+    if (confirm) {
+      try {
+        await api.saveUserInfo(userInfo)
+        saveUser(userInfo)
+
+        Toast.success('保存成功')
+        setTimeout(() => {
+          navigate('/read')
+        }, 2000)
+      } catch (e) {
+        console.error('用户资料保存失败', e)
+        Toast.fail('保存失败')
+      }
     }
   }
 
@@ -83,7 +96,7 @@ export default function UserFormPage() {
           footer={
             <div style={{ margin: '16px 16px 0' }}>
               <Button
-                disabled={!!user}
+                disabled={isFormFinished}
                 round
                 nativeType="submit"
                 type="primary"
@@ -104,7 +117,7 @@ export default function UserFormPage() {
             className="flex items-center justify-center"
           >
             <Input
-              disabled={!!user}
+              disabled={isFormFinished}
               placeholder="请输入您的手机号"
               type="tel"
               prefix=""
@@ -119,7 +132,7 @@ export default function UserFormPage() {
           >
             <Input
               type="text"
-              disabled={!!user}
+              disabled={isFormFinished}
               placeholder="请输入您的用户名"
               maxLength={10}
             />
@@ -148,7 +161,7 @@ export default function UserFormPage() {
             ]}
           >
             <Input
-              disabled={!!user}
+              disabled={isFormFinished}
               type="number"
               placeholder="请输入您的年龄"
               maxLength={2}
@@ -162,7 +175,7 @@ export default function UserFormPage() {
             rules={[{ required: true, message: '请选择性别' }]}
           >
             <Radio.Group
-              disabled={!!user}
+              disabled={isFormFinished}
               direction="horizontal"
               defaultValue=""
               className="px-3 py-2"
@@ -196,7 +209,7 @@ export default function UserFormPage() {
                 return (
                   <Field
                     label=""
-                    disabled={!!user}
+                    disabled={isFormFinished}
                     value={selectRows.map((row) => row?.text).join(',')}
                     onClick={() => actions.open()}
                   />
@@ -214,7 +227,7 @@ export default function UserFormPage() {
             <Selector
               options={dialectList}
               className=""
-              disabled={!!user}
+              disabled={isFormFinished}
               style={{
                 '--rv-selector-margin':
                   'var(--rv-padding-xs) var(--rv-padding-xs)'

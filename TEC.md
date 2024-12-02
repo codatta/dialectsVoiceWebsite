@@ -17,3 +17,12 @@
 ## 3.需求文档
 - https://chaintool.larksuite.com/wiki/ZL5Qwb0IgiSOEekWc0UuqRmTsW4?from=from_copylink
 - https://chaintool.larksuite.com/docx/SIC5dMfqko05NHx66UUuu2uOsre?from=from_copylink
+
+
+## 4.录音界面
+- loading
+- 最后一个录制界面
+- 记录时长
+- 状态恢复
+- 小程序开发
+- 结果页

@@ -52,11 +52,19 @@ export default function Page() {
   }
 
   return (
-    <div className="flex w-full flex-1 flex-col items-center justify-around gap-6 px-4 py-6">
-      <Sections
-        texts={list.map((item) => item.text as string)}
-        index={recordIndex}
-      />
+    <div className="flex w-full flex-1 flex-col items-center justify-around gap-6 bg-gray-50 px-4 py-6">
+      <div className="w-full">
+        <h2 className="mb-6 text-center text-lg font-semibold">
+          请用
+          <span className="font-bold text-blue-500">方言</span>
+          朗读下文
+        </h2>
+        <Sections
+          texts={list.map((item) => item.text as string)}
+          index={recordIndex}
+        />
+      </div>
+
       <div className="w-full">
         <RecordTip type={isRecording ? 'recording' : 'start'} />
         <Record
@@ -85,13 +93,13 @@ function Sections({ texts, index = 0 }: { texts: string[]; index: number }) {
       touchable={false}
       indicator={(total, current) => (
         <div className="absolute bottom-0 w-full px-2 pb-1 text-right">
-          <span className="text-[#629ff4]">{current + 1}</span>/{total}
+          <span className="text-blue-500">{current + 1}</span>/{total}
         </div>
       )}
     >
       {texts.map((text) => (
         <Swiper.Item key={text}>
-          <p className="flex h-[300px] items-center rounded-sm bg-white p-5">
+          <p className="flex min-h-[200px] items-center rounded-sm bg-white p-5 shadow-md">
             {text}
           </p>
         </Swiper.Item>
