@@ -1,4 +1,4 @@
-export const READ: Record<string, string[]> = {
+const READ_CORPUS: Record<string, string[]> = {
   120000: [
     '今儿我就用天津话给你们说一说我家那条胡同。那条胡同儿，名儿叫做西四道。',
     '那西四道胡同呀，多有意思呀，就像咱天津人一样，有点儿粗粝，但再往深一探，就能发现那里面的细腻和热情。',
@@ -69,3 +69,5 @@ export const READ: Record<string, string[]> = {
     '酒吧、夜市、烧烤摊，各种各样的娱乐场所灯火辉煌。大家吃着烧烤，喝着啤酒，聊着天，享受着生活。'
   ]
 }
+
+export default READ_CORPUS

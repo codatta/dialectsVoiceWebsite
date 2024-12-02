@@ -5,19 +5,17 @@ import WaveSurfer from 'wavesurfer.js'
 import RecordPlugin from 'wavesurfer.js/dist/plugins/record.esm.js'
 import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline.esm.js'
 
-import { type TAudio } from '@/stores/record-store'
+import { TRecordType, recordActions } from '@/stores/record-store'
+import RecordTip from './record-tip'
 import { cn } from '@/lib/utils'
+import { Toast } from 'react-vant'
 
 export default function Record({
-  onRecordStart,
-  onRecordEnd,
-  onRecordNext,
-  recordIndex
+  recordType,
+  recordedIndex
 }: {
-  onRecordStart?: () => void
-  onRecordEnd?: (audio: TAudio) => void
-  onRecordNext?: (blob: Blob) => void
-  recordIndex: number
+  recordType: TRecordType
+  recordedIndex: number
 }) {
   const wavesurferObject = useRef<WaveSurfer>()
   const recordRef = useRef<RecordPlugin | null>(null)
@@ -26,6 +24,7 @@ export default function Record({
   const [recordedUrl, setRecordedUrl] = useState<string>('')
   const [isRecording, setIsRecording] = useState<boolean>(false)
   const [isPlaying, setIsPlaying] = useState<boolean>(false)
+  const [isSubmiting, setIsSubmitting] = useState<boolean>(false)
   const blobRef = useRef<Blob>()
 
   const getAvailableAudioDevice = async (): Promise<string> => {
@@ -63,8 +62,15 @@ export default function Record({
     recordRef.current.startRecording({ deviceId })
   }
 
-  const onNext = () => {
-    onRecordNext?.(blobRef.current!)
+  const onSubmit = async () => {
+    setIsSubmitting(true)
+    try {
+      await recordActions.submitRecordItem(recordType, blobRef.current as Blob)
+      Toast.success('提交成功').then(() => recordActions.nextRecord(recordType))
+    } catch (e) {
+      Toast.fail('提交失败')
+    }
+    setIsSubmitting(false)
   }
 
   useEffect(() => {
@@ -106,22 +112,23 @@ export default function Record({
     record.on('record-start', () => {
       setIsRecording(true)
       setRecordedUrl('')
-      onRecordStart?.()
     })
 
     record.on('record-end', (blob) => {
       blobRef.current = blob
       const recordedUrl = URL.createObjectURL(blob)
       setIsRecording(false)
-      setRecordedUrl(recordedUrl)
 
       if (recordDurationRef.current < 1) {
-        console.warn('录音时间太短', recordDurationRef.current)
+        return Toast.fail('录音时间太短，请重录')
       }
 
-      onRecordEnd?.({
-        recordedUrl,
-        blob
+      setRecordedUrl(recordedUrl)
+      recordActions.updateRecordingItem(recordType, {
+        audio: {
+          url: recordedUrl,
+          duration: recordDurationRef.current
+        }
       })
     })
 
@@ -136,20 +143,20 @@ export default function Record({
   useEffect(() => {
     wavesurferObject.current?.empty()
     setRecordedUrl('')
-  }, [recordIndex])
+  }, [recordedIndex])
 
   return (
-    <>
+    <div>
       <div id="wave-container"></div>
-      <div className="flex items-center justify-between gap-6">
+      <div className="mb-6 mt-10 flex items-center justify-between gap-6">
         <button
           onClick={onTogglePlay}
           disabled={!recordedUrl}
           className="flex h-10 w-20 items-center justify-center rounded-full bg-gray-100 text-sm text-gray-600 hover:bg-gray-200 disabled:opacity-50"
         >
-          {isPlaying ? '暂停' : '试听'}
+          {isPlaying ? '暂停' : '回放'}
         </button>
-        <div className="relative my-10 h-[65px] w-[65px] select-none">
+        <div className="relative h-[65px] w-[65px] select-none">
           <div
             className={cn(
               'absolute inset-0 -left-[7.5px] -top-[7.5px] h-[80px] w-[80px] rounded-full bg-gradient-to-r from-[#f89096] to-[#b1b4e5] opacity-50 blur-sm transition-all',
@@ -163,6 +170,7 @@ export default function Record({
             )}
             onClick={onToggleRecord}
             onMouseDown={(e: React.MouseEvent) => e.preventDefault()}
+            disabled={isSubmiting}
           >
             <div
               className={cn(
@@ -179,13 +187,14 @@ export default function Record({
           </button>
         </div>
         <button
-          onClick={onNext}
-          disabled={!recordedUrl}
+          onClick={onSubmit}
+          disabled={!recordedUrl || isSubmiting}
           className="flex h-10 w-20 items-center justify-center rounded-full bg-[#FF4F5E] text-sm text-white hover:bg-[#ff3545] disabled:opacity-50"
         >
-          下一个
+          {isSubmiting ? '提交中...' : '提交'}
         </button>
       </div>
-    </>
+      <RecordTip type={isRecording ? 'recording' : 'start'} className="my-3" />
+    </div>
   )
 }

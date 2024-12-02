@@ -2,16 +2,15 @@ import { useEffect, useRef, useState } from 'react'
 import { Field, Swiper, SwiperInstance, Toast } from 'react-vant'
 
 import Record from '@/components/record'
-import RecordTip from '@/components/record-tip'
 
 import { TAudio, useRecordStore, recordActions } from '@/stores/record-store'
 
 import api from '@/apis/frontiter.api'
 import { useUserStore } from '@/stores/user-store'
+import { DIALECT_LABEL_MAP } from '@/config/dialect-config'
 
 export default function Page() {
   const [text, setText] = useState<string>('')
-  const [isRecording, setIsRecording] = useState<boolean>(false)
   const {
     monologue: { list, index: recordIndex }
   } = useRecordStore()
@@ -28,7 +27,6 @@ export default function Page() {
   }, [recordIndex])
 
   const onRecordEnd = (audio: TAudio) => {
-    setIsRecording(false)
     recordActions.updateRecord('monologue', recordIndex, {
       text,
       audio
@@ -60,15 +58,20 @@ export default function Page() {
 
   return (
     <div className="flex w-full flex-1 flex-col items-center justify-around gap-6 px-4 py-6">
+      <h2 className="mb-6 text-center text-base">
+        请用
+        <span className="font-semibold text-blue-500">
+          {DIALECT_LABEL_MAP[user?.dialects[0] as string]}
+        </span>
+        朗读下文
+      </h2>
       <Sections
         texts={list.map((item) => item.text as string)}
         index={recordIndex}
         onChange={(content) => setText(content)}
       />
       <div className="w-full">
-        <RecordTip type={isRecording ? 'recording' : 'start'} />
         <Record
-          onRecordStart={() => setIsRecording(true)}
           onRecordEnd={onRecordEnd}
           onRecordNext={onRecordNext}
           recordIndex={recordIndex}

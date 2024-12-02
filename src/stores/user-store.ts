@@ -19,7 +19,7 @@ function loadFromStorage(): TUser | null {
   return stored ? JSON.parse(stored) : null
 }
 
-const userStore = proxy<{
+export const userStore = proxy<{
   user: TUser | null
   isLoggedIn: boolean
 }>({
@@ -44,11 +44,11 @@ export function useUserStore() {
   return useSnapshot(userStore)
 }
 
-export function resetUser() {
+function resetUser() {
   userStore.user = null
 }
 
-export function saveUser(user: Partial<TUser>) {
+function saveUser(user: Partial<TUser>) {
   if (!userStore.user) {
     // If no existing user, ensure all required fields are provided
     if (!isCompleteUser(user)) {
@@ -73,4 +73,14 @@ function isCompleteUser(user: Partial<TUser>): user is TUser {
     user.areaCode.length === 3 &&
     user.dialects
   )
+}
+
+function getUser() {
+  return { ...userStore.user }
+}
+
+export const userActions = {
+  resetUser,
+  saveUser,
+  getUser
 }

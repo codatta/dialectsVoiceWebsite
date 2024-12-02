@@ -28,12 +28,14 @@ class frontier {
   }
 
   async saveRecord({
+    invitationCode,
     recordType,
     audioBlob,
     text,
     tel,
     dialects
   }: {
+    invitationCode: string
     recordType: TRecordType
     audioBlob: Blob
     text: string
@@ -46,14 +48,18 @@ class frontier {
     })
 
     const { file_path } = await commonApi.uploadFile(file)
-
-    return await db.collection(DIALECTS_COLLECTION).add({
+    const res = {
+      invitationCode,
       tel,
       dialects,
       recordType,
       text,
       audioUrl: file_path
-    })
+    }
+
+    await db.collection(DIALECTS_COLLECTION).add(res)
+
+    return res
   }
 }
 

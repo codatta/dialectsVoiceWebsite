@@ -12,10 +12,10 @@ import {
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { useUserStore, saveUser, type TUser } from '@/stores/user-store'
+import { useUserStore, userActions, type TUser } from '@/stores/user-store'
 import { DIALECT_MAP, type TDIALECT } from '@/config/dialect-config'
 import { AREA_LIST } from '@/config/area-config'
-import api from '@/apis/frontiter.api'
+import api from '@/apis/record.api'
 
 export default function UserFormPage() {
   const [form] = Form.useForm()
@@ -67,7 +67,7 @@ export default function UserFormPage() {
     if (confirm) {
       try {
         await api.saveUserInfo(userInfo)
-        saveUser(userInfo)
+        userActions.saveUser(userInfo)
 
         Toast.success('保存成功')
         setTimeout(() => {

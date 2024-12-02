@@ -1,9 +1,12 @@
+import { cn } from '@/lib/utils'
 import { MicIcon, Square } from 'lucide-react'
 
 export default function Tip({
-  type = ''
+  type = '',
+  className
 }: {
   type: 'start' | 'middle' | 'end' | 'recording' | ''
+  className?: string
 }) {
   let Msg = null
   switch (type) {
@@ -43,7 +46,12 @@ export default function Tip({
   }
 
   return (
-    <p className="flex w-full items-center justify-center text-center text-[#575757]">
+    <p
+      className={cn(
+        'flex w-full items-center justify-center text-center text-[#575757]',
+        className
+      )}
+    >
       {Msg}
     </p>
   )
