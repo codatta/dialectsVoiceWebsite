@@ -50,8 +50,19 @@ export function getDialectByKey(key: string): string {
   return res
 }
 
-export const DIALECT_LABEL_MAP = {
+export const DIALECT_LABEL_MAP: Record<string, string> = {
+  jizhong_guanhua: '冀中官话',
+  jidong_guanhua: '冀东官话',
+  jinan_guanhua: '冀南官话',
   tianjin_hua: '天津话',
   beifang_guanhua: '北方官话',
-  dongbei_guanhua: '东北官话'
+  dongbei_guanhua: '东北官话',
+  liaoning_hua: '辽宁话',
+  jilin_hua: '吉林话',
+  heilongjiang_hua: '黑龙江话',
+  chongqing_hua: '重庆话',
+  sichuan_hua: '四川话',
+  guizhou_hua: '贵州话',
+  qiandong_hua: '黔东话',
+  qiannan_hua: '黔南话'
 }

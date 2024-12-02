@@ -9,6 +9,7 @@ import { TAudio, useRecordStore, recordActions } from '@/stores/record-store'
 
 import { READ } from '@/config/read-config'
 import api from '@/apis/frontiter.api'
+import { DIALECT_LABEL_MAP } from '@/config/dialect-config'
 
 export default function Page() {
   const [isRecording, setIsRecording] = useState<boolean>(false)
@@ -54,9 +55,11 @@ export default function Page() {
   return (
     <div className="flex w-full flex-1 flex-col items-center justify-around gap-6 bg-gray-50 px-4 py-6">
       <div className="w-full">
-        <h2 className="mb-6 text-center text-lg font-semibold">
+        <h2 className="mb-6 text-center text-lg">
           请用
-          <span className="font-bold text-blue-500">方言</span>
+          <span className="font-semibold text-blue-500">
+            {DIALECT_LABEL_MAP[user?.dialects[0] as string] || '方言'}
+          </span>
           朗读下文
         </h2>
         <Sections

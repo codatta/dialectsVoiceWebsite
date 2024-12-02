@@ -8,6 +8,7 @@ import { TAudio, useRecordStore, recordActions } from '@/stores/record-store'
 
 import api from '@/apis/frontiter.api'
 import { useUserStore } from '@/stores/user-store'
+import { DIALECT_LABEL_MAP } from '@/config/dialect-config'
 
 export default function Page() {
   const [text, setText] = useState<string>('')
@@ -60,19 +61,26 @@ export default function Page() {
 
   return (
     <div className="flex w-full flex-1 flex-col items-center justify-around gap-6 px-4 py-6">
+      <h2 className="mb-6 text-center text-lg">
+        请用
+        <span className="font-semibold text-blue-500">
+          {DIALECT_LABEL_MAP[user?.dialects[0] as string] || '方言'}
+        </span>
+        朗读下文
+      </h2>
       <Sections
         texts={list.map((item) => item.text as string)}
         index={recordIndex}
         onChange={(content) => setText(content)}
       />
       <div className="w-full">
-        <RecordTip type={isRecording ? 'recording' : 'start'} />
         <Record
           onRecordStart={() => setIsRecording(true)}
           onRecordEnd={onRecordEnd}
           onRecordNext={onRecordNext}
           recordIndex={recordIndex}
         />
+        <RecordTip type={isRecording ? 'recording' : 'start'} />
       </div>
     </div>
   )
@@ -93,7 +101,7 @@ function TextArea({
 
   return (
     <Field
-      rows={8}
+      rows={4}
       value={content}
       maxLength={300}
       onChange={_onContentChange}
