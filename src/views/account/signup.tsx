@@ -236,9 +236,10 @@ export default function UserFormPage() {
               }}
             </Area>
           </Form.Item>
+
           <Form.Item
             name="dialects"
-            label="选择方言"
+            label={dialectList?.length && '选择方言'}
             className={`flex items-center justify-center ${!dialectList?.length && 'hidden'}`}
             rules={[{ required: true, message: '请选择方言' }]}
           >
