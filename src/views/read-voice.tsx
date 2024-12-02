@@ -34,7 +34,7 @@ export default function Page() {
     console.log('onRecordEnd', audio, recordIndex)
   }
 
-  const onRecordNext = (audioBlob: Blob) => {
+  const onRecordNext = (audioBlob: Blob, duration: number) => {
     if (recordIndex === list.length - 1) {
       console.log('on end')
     }
@@ -44,7 +44,8 @@ export default function Page() {
       dialects: [...user!.dialects],
       text: currentRecord.text!,
       audioBlob,
-      recordType: 'read'
+      recordType: 'read',
+      duration
     })
     recordActions.nextRecord('read')
   }

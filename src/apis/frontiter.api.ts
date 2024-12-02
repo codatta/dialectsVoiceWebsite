@@ -7,6 +7,15 @@ import { type TUser } from '@/stores/user-store'
 const USER_COLLECTION = 'dialects-label-user'
 const DIALECTS_COLLECTION = 'dialects-label'
 
+interface TRecordItem {
+  recordType: TRecordType
+  audioBlob: Blob
+  text: string
+  tel: string
+  dialects: string[]
+  duration: number
+}
+
 class frontier {
   constructor() {}
 
@@ -32,15 +41,10 @@ class frontier {
     audioBlob,
     text,
     tel,
-    dialects
-  }: {
-    recordType: TRecordType
-    audioBlob: Blob
-    text: string
-    tel: string
-    dialects: string[]
-  }) {
-    console.log('saveRecord', recordType, audioBlob, text)
+    dialects,
+    duration
+  }: TRecordItem) {
+    console.log('saveRecord', recordType, audioBlob, text, duration)
     const file = new File([audioBlob], `${recordType}-${Date.now()}.webm`, {
       type: audioBlob.type
     })
@@ -52,8 +56,17 @@ class frontier {
       dialects,
       recordType,
       text,
-      audioUrl: file_path
+      audioUrl: file_path,
+      duration
     })
+  }
+
+  async getRecordList(tel: string) {
+    const { data } = await db
+      .collection(DIALECTS_COLLECTION)
+      .where({ tel })
+      .get()
+    return data as TRecordItem[]
   }
 }
 

@@ -35,7 +35,7 @@ export default function Page() {
     console.log('onRecordEnd monologue', audio, recordIndex)
   }
 
-  const onRecordNext = (audioBlob: Blob) => {
+  const onRecordNext = (audioBlob: Blob, duration: number) => {
     if (!text.trim()) {
       Toast.fail('请完成对话内容编辑')
       return
@@ -50,7 +50,8 @@ export default function Page() {
       dialects: [...user!.dialects],
       recordType: 'monologue',
       text,
-      audioBlob
+      audioBlob,
+      duration
     })
 
     recordActions.nextRecord('monologue')

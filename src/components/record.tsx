@@ -18,7 +18,7 @@ export default function Record({
 }: {
   onRecordStart?: () => void
   onRecordEnd?: (audio: TAudio) => void
-  onRecordNext?: (blob: Blob) => void
+  onRecordNext?: (blob: Blob, duration: number) => void
   recordIndex: number
 }) {
   const wavesurferObject = useRef<WaveSurfer>()
@@ -66,7 +66,10 @@ export default function Record({
   }
 
   const onNext = () => {
-    onRecordNext?.(blobRef.current!)
+    onRecordNext?.(
+      blobRef.current!,
+      wavesurferObject.current?.getDuration() || 0
+    )
   }
 
   const onReset = () => {
@@ -88,6 +91,7 @@ export default function Record({
     wavesurferObject.current.on('play', () => {
       setIsPlaying(true)
     })
+
     wavesurferObject.current.on('pause', () => {
       setIsPlaying(false)
     })

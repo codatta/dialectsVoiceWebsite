@@ -2,9 +2,40 @@ import { Field, Cell, Button, Dialog } from 'react-vant'
 import { resetUser, useUserStore } from '@/stores/user-store'
 import { useNavigate } from 'react-router-dom'
 import { getDialectByKey } from '@/config/dialect-config'
+import { useEffect, useState } from 'react'
+import api from '@/apis/frontiter.api'
 
 function UserInfoHead() {
   const { user } = useUserStore()
+  const [readDuration, setReadDuration] = useState<string>('0.0')
+  const [monologueDuration, setMonologueDuration] = useState<string>('0.0')
+
+  async function getTotalRecordTime() {
+    if (!user?.tel) return
+    const res = await api.getRecordList(user?.tel)
+
+    let totalRead = 0
+    let totalMonologue = 0
+
+    res.forEach((item) => {
+      if (item.recordType === 'read') {
+        totalRead += item.duration || 0
+      }
+      if (item.recordType === 'monologue') {
+        totalMonologue += item.duration || 0
+      }
+    })
+
+    console.log('totalRead', totalRead)
+    console.log('totalMonologue', totalMonologue)
+    setReadDuration((totalRead / 60).toFixed(1))
+    setMonologueDuration((totalMonologue / 60).toFixed(1))
+  }
+
+  useEffect(() => {
+    if (!user?.tel) return
+    getTotalRecordTime()
+  }, [user])
 
   return (
     <div>
@@ -23,12 +54,12 @@ function UserInfoHead() {
         </div>
         <div className="text-center text-lg text-white">{user?.username}</div>
       </div>
-      {/* <div className="relative -top-6 px-4">
+      <div className="relative -top-6 px-4">
         <div className="flex items-center justify-center rounded-2xl bg-white py-5 shadow-lg">
           <div className="w-[50%] border-r border-black border-opacity-5 px-6 text-center">
             <div className="text-xs text-black text-opacity-35">朗读时长</div>
             <div>
-              <em className="text-4xl font-bold">128</em>
+              <em className="text-4xl font-bold">{readDuration}</em>
               <span className="text-sm text-black text-opacity-50"> 分钟</span>
             </div>
           </div>
@@ -37,12 +68,12 @@ function UserInfoHead() {
               自由录音时长
             </div>
             <div>
-              <em className="text-4xl font-bold">128</em>
+              <em className="text-4xl font-bold">{monologueDuration}</em>
               <span className="text-sm text-black text-opacity-50"> 分钟</span>
             </div>
           </div>
         </div>
-      </div> */}
+      </div>
     </div>
   )
 }
