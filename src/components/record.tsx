@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { MicIcon, Square } from 'lucide-react'
+
+import WaveSurfer from 'wavesurfer.js'
 import RecordPlugin from 'wavesurfer.js/dist/plugins/record.esm.js'
-import wavesurfer from 'wavesurfer.js'
+import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline.esm.js'
 
 import { type TAudio } from '@/stores/record-store'
 import { cn } from '@/lib/utils'
-import WaveSurfer from 'wavesurfer.js'
 
 export default function Record({
   onRecordStart,
@@ -44,7 +45,7 @@ export default function Record({
   }
 
   const onTogglePlay = () => {
-    if (wavesurfer) wavesurferObject.current?.playPause()
+    if (WaveSurfer) wavesurferObject.current?.playPause()
   }
 
   const onToggleRecord = async () => {
@@ -58,10 +59,7 @@ export default function Record({
     }
 
     const deviceId = await getAvailableAudioDevice()
-    recordRef.current.startRecording({ deviceId }).then(() => {
-      console.log('recording: ', deviceId)
-      //   recordRef.current?.startMic()
-    })
+    recordRef.current.startRecording({ deviceId })
   }
 
   const onNext = () => {
@@ -69,10 +67,11 @@ export default function Record({
   }
 
   useEffect(() => {
-    wavesurferObject.current = wavesurfer.create({
+    wavesurferObject.current = WaveSurfer.create({
       container: '#wave-container',
       url: recordedUrl,
-      waveColor: 'purple',
+      waveColor: '#f89096',
+      progressColor: '#b1b4e5',
       height: 100
     })
 
@@ -83,6 +82,17 @@ export default function Record({
       setIsPlaying(false)
     })
 
+    wavesurferObject.current.registerPlugin(
+      TimelinePlugin.create({
+        height: 12,
+        timeInterval: 0.1,
+        primaryLabelInterval: 1,
+        style: {
+          fontSize: '10px',
+          color: '#6A3274'
+        }
+      })
+    )
     const record = wavesurferObject.current.registerPlugin(
       RecordPlugin.create({
         renderRecordedAudio: true,
@@ -119,7 +129,7 @@ export default function Record({
     <>
       <div id="wave-container"></div>
       <div className="flex items-center justify-center gap-6">
-        <div className="relative my-6 h-[65px] w-[65px]">
+        <div className="relative my-10 h-[65px] w-[65px] select-none">
           <div
             className={cn(
               'absolute inset-0 -left-[7.5px] -top-[7.5px] h-[80px] w-[80px] rounded-full bg-gradient-to-r from-[#f89096] to-[#b1b4e5] opacity-50 blur-sm transition-all',
@@ -127,9 +137,20 @@ export default function Record({
             )}
           ></div>
           <button
-            className="relative flex h-full w-full items-center justify-center rounded-full bg-white"
+            className={cn(
+              'relative flex h-full w-full items-center justify-center rounded-full bg-white transition-all duration-300',
+              isRecording && 'scale-110 animate-pulse'
+            )}
             onClick={onToggleRecord}
+            onMouseDown={(e: React.MouseEvent) => e.preventDefault()}
           >
+            <div
+              className={cn(
+                'absolute inset-0 rounded-full',
+                isRecording &&
+                  'before:absolute before:inset-0 before:animate-ping before:rounded-full before:bg-[#FF4F5E]/20'
+              )}
+            />
             {isRecording ? (
               <Square color="#FF4F5E" size={24} />
             ) : (
@@ -141,6 +162,8 @@ export default function Record({
       <div className="mt-6 flex items-center justify-center gap-6">
         <button
           onClick={onTogglePlay}
+          //   onTouchStart={onToggleRecord}
+          //   onTouchEnd={onToggleRecord}
           disabled={!recordedUrl}
           className="flex h-10 w-20 items-center justify-center rounded-full bg-gray-100 text-sm text-gray-600 hover:bg-gray-200 disabled:opacity-50"
         >
