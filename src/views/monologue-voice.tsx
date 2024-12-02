@@ -100,9 +100,8 @@ function TextArea({
       value={content}
       maxLength={300}
       onChange={_onContentChange}
-      // showWordLimit
       clearable
-      placeholder="请编辑独白内容（300字以内）"
+      placeholder="请先编辑或复制粘贴一段朗读文本（300字以内）"
       type="textarea"
       autoSize
       className="flex h-[300px] items-center rounded-sm bg-white p-5"

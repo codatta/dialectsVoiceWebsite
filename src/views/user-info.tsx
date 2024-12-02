@@ -23,7 +23,7 @@ function UserInfoHead() {
         </div>
         <div className="text-center text-lg text-white">{user?.username}</div>
       </div>
-      <div className="relative -top-6 px-4">
+      {/* <div className="relative -top-6 px-4">
         <div className="flex items-center justify-center rounded-2xl bg-white py-5 shadow-lg">
           <div className="w-[50%] border-r border-black border-opacity-5 px-6 text-center">
             <div className="text-xs text-black text-opacity-35">朗读时长</div>
@@ -42,7 +42,7 @@ function UserInfoHead() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   )
 }
