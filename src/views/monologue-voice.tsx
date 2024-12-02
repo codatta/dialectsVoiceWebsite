@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 import { Field, Swiper, SwiperInstance, Toast } from 'react-vant'
 
 import Record from '@/components/record'
-import RecordTip from '@/components/record-tip'
 
 import { TAudio, useRecordStore, recordActions } from '@/stores/record-store'
 
@@ -12,7 +11,6 @@ import { DIALECT_LABEL_MAP } from '@/config/dialect-config'
 
 export default function Page() {
   const [text, setText] = useState<string>('')
-  const [isRecording, setIsRecording] = useState<boolean>(false)
   const {
     monologue: { list, index: recordIndex }
   } = useRecordStore()
@@ -29,7 +27,6 @@ export default function Page() {
   }, [recordIndex])
 
   const onRecordEnd = (audio: TAudio) => {
-    setIsRecording(false)
     recordActions.updateRecord('monologue', recordIndex, {
       text,
       audio
@@ -75,12 +72,10 @@ export default function Page() {
       />
       <div className="w-full">
         <Record
-          onRecordStart={() => setIsRecording(true)}
           onRecordEnd={onRecordEnd}
           onRecordNext={onRecordNext}
           recordIndex={recordIndex}
         />
-        <RecordTip type={isRecording ? 'recording' : 'start'} />
       </div>
     </div>
   )

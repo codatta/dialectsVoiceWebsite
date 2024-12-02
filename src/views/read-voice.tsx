@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { Swiper, SwiperInstance } from 'react-vant'
 
 import Record from '@/components/record'
-import RecordTip from '@/components/record-tip'
 
 import { useUserStore } from '@/stores/user-store'
 import { TAudio, useRecordStore, recordActions } from '@/stores/record-store'
@@ -12,7 +11,6 @@ import api from '@/apis/frontiter.api'
 import { DIALECT_LABEL_MAP } from '@/config/dialect-config'
 
 export default function Page() {
-  const [isRecording, setIsRecording] = useState<boolean>(false)
   const {
     read: { current: currentRecord, list, index: recordIndex }
   } = useRecordStore()
@@ -29,7 +27,6 @@ export default function Page() {
   }, [currentRecord])
 
   const onRecordEnd = (audio: TAudio) => {
-    setIsRecording(false)
     recordActions.updateRecord('read', recordIndex, {
       audio
     })
@@ -70,12 +67,10 @@ export default function Page() {
 
       <div className="w-full">
         <Record
-          onRecordStart={() => setIsRecording(true)}
           onRecordEnd={onRecordEnd}
           onRecordNext={onRecordNext}
           recordIndex={recordIndex}
         />
-        <RecordTip type={isRecording ? 'recording' : 'start'} />
       </div>
     </div>
   )

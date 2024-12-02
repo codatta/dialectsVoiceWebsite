@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 import { Field, Swiper, SwiperInstance, Toast } from 'react-vant'
 
 import Record from '@/components/record'
-import RecordTip from '@/components/record-tip'
 
 import { TAudio, useRecordStore, recordActions } from '@/stores/record-store'
 import { useUserStore } from '@/stores/user-store'
@@ -10,7 +9,6 @@ import api from '@/apis/frontiter.api'
 
 export default function Page() {
   const [text, setText] = useState<string>('')
-  const [isRecording, setIsRecording] = useState<boolean>(false)
   const {
     chat: { list, index: recordIndex }
   } = useRecordStore()
@@ -27,7 +25,6 @@ export default function Page() {
   }, [recordIndex])
 
   const onRecordEnd = (audio: TAudio) => {
-    setIsRecording(false)
     recordActions.updateRecord('chat', recordIndex, {
       text,
       audio
@@ -64,13 +61,7 @@ export default function Page() {
         onChange={(content) => setText(content)}
       />
       <div className="w-full">
-        <RecordTip type={isRecording ? 'recording' : 'start'} />
-        <Record
-          onRecordStart={() => setIsRecording(true)}
-          onRecordEnd={onRecordEnd}
-          onRecordNext={onRecordNext}
-          recordIndex={recordIndex}
-        />
+        <Record onRecordNext={onRecordNext} recordIndex={recordIndex} />
       </div>
     </div>
   )

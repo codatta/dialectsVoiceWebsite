@@ -3,7 +3,6 @@ import { proxy, useSnapshot } from 'valtio'
 export type TRecordType = 'read' | 'monologue' | 'chat'
 export type TAudio = {
   url?: string
-  blob?: Blob
   duration?: number
 }
 export type TRecordItem = {

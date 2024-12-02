@@ -7,6 +7,8 @@ import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline.esm.js'
 
 import { type TAudio } from '@/stores/record-store'
 import { cn } from '@/lib/utils'
+import { Toast } from 'react-vant'
+import RecordTip from './record-tip'
 
 export default function Record({
   onRecordStart,
@@ -67,6 +69,11 @@ export default function Record({
     onRecordNext?.(blobRef.current!)
   }
 
+  const onReset = () => {
+    wavesurferObject.current?.empty()
+    setRecordedUrl('')
+  }
+
   useEffect(() => {
     if (wavesurferObject.current) return
 
@@ -117,10 +124,15 @@ export default function Record({
 
       if (recordDurationRef.current < 1) {
         console.warn('录音时间太短', recordDurationRef.current)
+
+        onReset()
+        return Toast.fail({
+          duration: 300,
+          message: '录音时间太短, 请重录'
+        })
       }
 
       onRecordEnd?.({
-        recordedUrl,
         blob
       })
     })
@@ -134,8 +146,7 @@ export default function Record({
   }, [wavesurferObject])
 
   useEffect(() => {
-    wavesurferObject.current?.empty()
-    setRecordedUrl('')
+    onReset()
   }, [recordIndex])
 
   return (
@@ -147,7 +158,7 @@ export default function Record({
           disabled={!recordedUrl}
           className="flex h-10 w-20 items-center justify-center rounded-full bg-gray-100 text-sm text-gray-600 hover:bg-gray-200 disabled:opacity-50"
         >
-          {isPlaying ? '暂停' : '试听'}
+          {isPlaying ? '暂停' : '回放'}
         </button>
         <div className="relative my-10 h-[65px] w-[65px] select-none">
           <div
@@ -183,9 +194,10 @@ export default function Record({
           disabled={!recordedUrl}
           className="flex h-10 w-20 items-center justify-center rounded-full bg-[#FF4F5E] text-sm text-white hover:bg-[#ff3545] disabled:opacity-50"
         >
-          下一个
+          提交
         </button>
       </div>
+      <RecordTip type={isRecording ? 'recording' : 'start'} />
     </>
   )
 }
