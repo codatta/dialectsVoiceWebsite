@@ -37,6 +37,19 @@ export const DIALECT_MAP: Record<string, TDIALECT[]> = {
   ]
 }
 
+export function getDialectByKey(key: string): string {
+  let res = ''
+  const dialectList = Object.values(DIALECT_MAP)
+  dialectList.forEach((list) => {
+    list.forEach((item) => {
+      if (item.value === key) {
+        res = item.label
+      }
+    })
+  })
+  return res
+}
+
 export const DIALECT_LABEL_MAP = {
   tianjin_hua: '天津话',
   beifang_guanhua: '北方官话',

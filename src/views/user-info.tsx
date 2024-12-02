@@ -1,6 +1,7 @@
 import { Field, Cell, Button, Dialog } from 'react-vant'
 import { resetUser, useUserStore } from '@/stores/user-store'
 import { useNavigate } from 'react-router-dom'
+import { getDialectByKey } from '@/config/dialect-config'
 
 function UserInfoHead() {
   const { user } = useUserStore()
@@ -69,7 +70,9 @@ export default function UserFormPage() {
         个人信息
       </div>
       <Cell.Group>
+        <Field readOnly value={user?.invitationCode} label="邀请码" />
         <Field readOnly value={user?.tel} label="手机" />
+        <Field readOnly value={user?.username} label="用户名" />
         <Field readOnly value={user?.age.toString()} label="年龄" />
         <Field
           readOnly
@@ -77,8 +80,11 @@ export default function UserFormPage() {
           label="性别"
         />
         <Field readOnly value={user?.areaName?.join(',')} label="地区" />
-        <Field readOnly value={user?.dialects?.join(',')} label="方言" />
-        <Field readOnly value={''} label="邀请码" />
+        <Field
+          readOnly
+          value={getDialectByKey(user?.dialects[0] || '')}
+          label="方言"
+        />
       </Cell.Group>
 
       <div className="mt-10 text-center">
