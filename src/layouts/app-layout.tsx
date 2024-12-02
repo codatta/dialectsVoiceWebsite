@@ -1,56 +1,47 @@
 import { useUserStore } from '@/stores/user-store'
-import { useEffect } from 'react'
-import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
-import { Toast } from 'react-vant'
+import { useEffect, useState } from 'react'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { Tabbar, Toast } from 'react-vant'
+import { AudioLines, Mic, User } from 'lucide-react'
 
 export default function AppLayout() {
   const { user } = useUserStore()
-  const location = useLocation()
   const navigate = useNavigate()
+  const [tabName, setTabName] = useState('setting')
+  const loacation = useLocation()
 
   useEffect(() => {
-    if (location.pathname !== '/user' && !user) {
-      Toast.info('请先完善个人信息')
-      navigate('/user')
+    if (!user) {
+      Toast.info('请录入个人信息')
+      navigate('/account/signup')
     }
-  }, [location, user, navigate])
+  }, [])
+
+  function handleTabChange(tabName: string | number) {
+    if (typeof tabName === 'number') return
+    navigate(tabName)
+  }
+
+  useEffect(() => {
+    setTabName(loacation.pathname)
+  }, [loacation])
 
   return (
     <div className="flex min-h-screen flex-col bg-gray-50">
-      <Header />
       <div className="flex flex-1 justify-center bg-gradient-to-t from-white from-20% to-[#f8f7f5]">
         <Outlet />
       </div>
+      <Tabbar className="py-2" value={tabName} onChange={handleTabChange}>
+        <Tabbar.Item name="/read" icon={<Mic />}>
+          朗读
+        </Tabbar.Item>
+        <Tabbar.Item name="/monologue" icon={<AudioLines />}>
+          自由录音
+        </Tabbar.Item>
+        <Tabbar.Item name="/user" icon={<User />}>
+          我的
+        </Tabbar.Item>
+      </Tabbar>
     </div>
-  )
-}
-
-function Header() {
-  const { pathname } = useLocation()
-
-  const navs = [
-    {
-      url: '/read',
-      label: '朗读'
-    },
-    { url: '/monologue', label: '录音' },
-    // { url: '/chat', label: '自由对话' },
-    { url: '/user', label: '我的' }
-  ]
-
-  return (
-    <header className="sticky top-0 z-10 flex h-14 items-center bg-[#e7e5e2] text-[#000] shadow">
-      {navs.map((nav) => (
-        <Link
-          to={nav.url}
-          key={nav.label}
-          className={`flex h-full items-center px-3 ${
-            pathname === nav.url ? 'bg-[#f3f2f1] text-[#1570ef]' : ''
-          }`}
-        >
-          {nav.label}
-        </Link>
-      ))}
-    </header>
   )
 }

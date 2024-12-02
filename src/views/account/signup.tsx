@@ -82,8 +82,8 @@ export default function UserFormPage() {
 
   return (
     <div className="bg-white px-4 py-6">
-      <div className="mx-auto max-w-4xl">
-        <h1 className="mb-8 text-center text-2xl font-bold text-gray-800">
+      <div className="mx-auto max-w-lg">
+        <h1 className="mb-8 px-4 text-center text-2xl font-bold text-gray-800">
           用户资料
           <div className="mt-2 text-sm font-normal text-gray-600">
             我们收集这些信息是为了提高语音识别引擎的准确性，帮助我们更好地服务不同地区、不同年龄段的用户
@@ -95,17 +95,16 @@ export default function UserFormPage() {
           className="rounded-lg bg-white"
           onFinish={onFinish}
           footer={
-            <div style={{ margin: '16px 16px 0' }}>
-              <Button
-                disabled={isFormFinished}
-                round
-                nativeType="submit"
-                type="primary"
-                block
-              >
-                保存
-              </Button>
-            </div>
+            <Button
+              className="mt-4"
+              disabled={!!user}
+              round
+              nativeType="submit"
+              type="primary"
+              block
+            >
+              保存
+            </Button>
           }
         >
           <Form.Item
