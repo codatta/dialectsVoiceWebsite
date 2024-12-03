@@ -1,8 +1,8 @@
-import { Field, Cell, Button, Dialog } from 'react-vant'
-import { resetUser, useUserStore } from '@/stores/user-store'
+import { Field, Cell, Button, Dialog, Selector, Toast } from 'react-vant'
+import { resetUser, userActions, useUserStore } from '@/stores/user-store'
 import { useNavigate } from 'react-router-dom'
-import { getDialectByKey } from '@/config/dialect-config'
-import { useEffect, useState } from 'react'
+import { DIALECT_MAP, getDialectByKey } from '@/config/dialect-config'
+import { useEffect, useRef, useState } from 'react'
 import api from '@/apis/frontiter.api'
 
 function UserInfoHead() {
@@ -79,6 +79,7 @@ function UserInfoHead() {
 }
 
 export default function UserFormPage() {
+  const selectedDialectsRef = useRef<string[]>([])
   const { user } = useUserStore()
   const navigate = useNavigate()
 
@@ -115,6 +116,45 @@ export default function UserFormPage() {
           readOnly
           value={getDialectByKey(user?.dialects[0] || '')}
           label="方言"
+          rightIcon={
+            <Button
+              size="small"
+              className="mr-2"
+              onClick={() => {
+                Dialog.confirm({
+                  title: '修改方言',
+                  message: (
+                    <Selector
+                      className="dialect-selector"
+                      options={DIALECT_MAP[user?.areaCode[0] || '']}
+                      defaultValue={[user?.dialects[0] || '']}
+                      onChange={(value) => {
+                        console.log('setSelectedDialect', value)
+                        selectedDialectsRef.current = value
+                      }}
+                      style={{
+                        '--rv-selector-margin':
+                          'var(--rv-padding-xs) var(--rv-padding-xs)'
+                      }}
+                    />
+                  ),
+                  onConfirm: async () => {
+                    if (selectedDialectsRef.current.length) {
+                      try {
+                        await userActions.saveUser({
+                          dialects: selectedDialectsRef.current
+                        })
+                      } catch (e) {
+                        Toast.fail('修改失败')
+                      }
+                    }
+                  }
+                })
+              }}
+            >
+              编辑
+            </Button>
+          }
         />
       </Cell.Group>
 

@@ -59,13 +59,21 @@ export default function Page() {
 
   return (
     <div className="flex w-full flex-1 flex-col items-center justify-around gap-6 px-4 py-6">
-      <h2 className="mb-6 text-center text-lg">
-        请用
-        <span className="font-semibold text-blue-500">
-          {DIALECT_LABEL_MAP[user?.dialects[0] as string] || '方言'}
-        </span>
-        朗读下文
-      </h2>
+      <div>
+        <h2 className="mb-6 text-center text-lg">
+          请用
+          <span className="font-semibold text-blue-500">
+            {DIALECT_LABEL_MAP[user?.dialects[0] as string] || '方言'}
+          </span>
+          朗读下文
+        </h2>
+        <div className="text-center text-sm text-gray-500">
+          您可以在下方自由编辑一段朗读文本，不限来源，
+          <br />
+          可以是诗歌、散文或新闻等（300字以内）
+        </div>
+      </div>
+
       <Sections
         texts={list.map((item) => item.text as string)}
         index={recordIndex}
@@ -102,7 +110,7 @@ function TextArea({
       maxLength={300}
       onChange={_onContentChange}
       clearable
-      placeholder="请先编辑或复制粘贴一段朗读文本（300字以内）"
+      placeholder="请编辑朗文"
       type="textarea"
       autoSize
       className="flex h-[300px] items-center rounded-sm bg-white p-5"

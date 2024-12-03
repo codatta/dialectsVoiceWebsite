@@ -1,6 +1,8 @@
 import { proxy, useSnapshot } from 'valtio'
 import { subscribeKey } from 'valtio/utils'
 
+import api from '@/apis/frontiter.api'
+
 export interface TUser {
   tel: string // 作为唯一id
   username: string
@@ -48,29 +50,14 @@ export function resetUser() {
   userStore.user = null
 }
 
-export function saveUser(user: Partial<TUser>) {
-  if (!userStore.user) {
-    // If no existing user, ensure all required fields are provided
-    if (!isCompleteUser(user)) {
-      throw new Error(
-        'All required user fields must be provided when creating new user'
-      )
-    }
-    userStore.user = user as TUser
-  } else {
-    // Update existing user
-    userStore.user = { ...userStore.user, ...user }
-  }
+export async function saveUser(user: Partial<TUser>) {
+  const newUserInfo = { ...(userStore.user || {}), ...user } as TUser
+
+  await api.saveUserInfo(newUserInfo)
+  userStore.user = newUserInfo
 }
 
-function isCompleteUser(user: Partial<TUser>): user is TUser {
-  return !!(
-    user.tel &&
-    user.username &&
-    user.gender &&
-    typeof user.age === 'number' &&
-    Array.isArray(user.areaCode) &&
-    user.areaCode.length === 3 &&
-    user.dialects
-  )
+export const userActions = {
+  saveUser,
+  resetUser
 }
