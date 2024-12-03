@@ -10,30 +10,30 @@ function UserInfoHead() {
   const [readDuration, setReadDuration] = useState<string>('0.0')
   const [monologueDuration, setMonologueDuration] = useState<string>('0.0')
 
-  async function getTotalRecordTime() {
-    if (!user?.tel) return
-    const res = await api.getRecordList(user?.tel)
-
-    let totalRead = 0
-    let totalMonologue = 0
-
-    res.forEach((item) => {
-      if (item.recordType === 'read') {
-        totalRead += item.duration || 0
-      }
-      if (item.recordType === 'monologue') {
-        totalMonologue += item.duration || 0
-      }
-    })
-
-    console.log('totalRead', totalRead)
-    console.log('totalMonologue', totalMonologue)
-    setReadDuration((totalRead / 60).toFixed(1))
-    setMonologueDuration((totalMonologue / 60).toFixed(1))
-  }
-
   useEffect(() => {
     if (!user?.tel) return
+
+    async function getTotalRecordTime() {
+      if (!user?.tel) return
+      const res = await api.getRecordList(user?.tel)
+
+      let totalRead = 0
+      let totalMonologue = 0
+
+      res.forEach((item) => {
+        if (item.recordType === 'read') {
+          totalRead += item.duration || 0
+        }
+        if (item.recordType === 'monologue') {
+          totalMonologue += item.duration || 0
+        }
+      })
+
+      console.log('totalRead', totalRead)
+      console.log('totalMonologue', totalMonologue)
+      setReadDuration((totalRead / 60).toFixed(1))
+      setMonologueDuration((totalMonologue / 60).toFixed(1))
+    }
     getTotalRecordTime()
   }, [user])
 
