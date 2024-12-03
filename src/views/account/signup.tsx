@@ -243,7 +243,7 @@ export default function UserFormPage() {
           >
             <Selector
               options={dialectList}
-              className=""
+              className="flex items-center justify-center"
               disabled={isFormFinished}
               style={{
                 '--rv-selector-margin':
