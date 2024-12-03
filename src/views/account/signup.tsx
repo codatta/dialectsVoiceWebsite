@@ -205,7 +205,7 @@ export default function UserFormPage() {
           </Form.Item>
           <Form.Item
             name="areaCode"
-            label="地区"
+            label="方言地区"
             rules={[
               {
                 required: true,

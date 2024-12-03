@@ -110,7 +110,7 @@ export default function UserFormPage() {
           value={user?.gender == 'male' ? '男' : '女'}
           label="性别"
         />
-        <Field readOnly value={user?.areaName?.join(',')} label="地区" />
+        <Field readOnly value={user?.areaName?.join(',')} label="方言地区" />
         <Dialect />
       </Cell.Group>
 
