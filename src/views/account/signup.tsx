@@ -237,8 +237,8 @@ export default function UserFormPage() {
 
           <Form.Item
             name="dialects"
-            label={dialectList?.length && '选择方言'}
-            className={`flex items-center justify-center ${!dialectList?.length && 'hidden'}`}
+            label="方言"
+            className={`justify-center} flex items-center`}
             rules={[{ required: true, message: '请选择方言' }]}
           >
             <Selector
