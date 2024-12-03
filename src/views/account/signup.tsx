@@ -15,7 +15,6 @@ import { useNavigate } from 'react-router-dom'
 import { useUserStore, userActions, type TUser } from '@/stores/user-store'
 import { DIALECT_MAP, type TDIALECT } from '@/config/dialect-config'
 import { AREA_LIST } from '@/config/area-config'
-import api from '@/apis/frontiter.api'
 
 export default function UserFormPage() {
   const [form] = Form.useForm()
