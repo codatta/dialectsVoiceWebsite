@@ -9,6 +9,8 @@ import {
   Toast,
   Dialog
 } from 'react-vant'
+import 'react-vant/es/selector/style/index.css'
+
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -237,14 +239,13 @@ export default function UserFormPage() {
 
           <Form.Item
             name="dialects"
-            label={dialectList?.length && '方言'}
-            className={`flex items-center justify-center ${!dialectList?.length && 'hidden'}`}
+            label="方言"
+            className={`flex items-center justify-center ${!dialectList.length && '!hidden'}`}
             rules={[{ required: true, message: '请选择方言' }]}
           >
             <Selector
               options={dialectList}
               className=""
-              disabled={isFormFinished}
               style={{
                 '--rv-selector-margin':
                   'var(--rv-padding-xs) var(--rv-padding-xs)'
