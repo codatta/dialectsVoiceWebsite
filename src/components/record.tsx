@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import { MicIcon, Square } from 'lucide-react'
-
 import WaveSurfer from 'wavesurfer.js'
 import RecordPlugin from 'wavesurfer.js/dist/plugins/record.esm.js'
 import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline.esm.js'
@@ -10,17 +9,19 @@ import { cn } from '@/lib/utils'
 import { Toast } from 'react-vant'
 import RecordTip from './record-tip'
 
+interface RecordProps {
+  onRecordStart?: () => void
+  onRecordEnd?: (audio: TAudio) => void
+  onRecordNext?: (blob: Blob, duration: number) => void
+  recordIndex: number
+}
+
 export default function Record({
   onRecordStart,
   onRecordEnd,
   onRecordNext,
   recordIndex
-}: {
-  onRecordStart?: () => void
-  onRecordEnd?: (audio: TAudio) => void
-  onRecordNext?: (blob: Blob, duration: number) => void
-  recordIndex: number
-}) {
+}: RecordProps) {
   const wavesurferObject = useRef<WaveSurfer>()
   const recordRef = useRef<RecordPlugin | null>(null)
   const deviceIdRef = useRef<string>('')
@@ -33,27 +34,24 @@ export default function Record({
   const getAvailableAudioDevice = async (): Promise<string> => {
     if (deviceIdRef.current) return deviceIdRef.current
 
-    return RecordPlugin.getAvailableAudioDevices().then((devices) => {
-      if (devices.length) {
-        deviceIdRef.current = devices[0].deviceId
-      }
-      console.log(
-        'getAvailableAudioDevice:',
-        devices,
-        'default deviceId: ',
-        deviceIdRef.current
-      )
-      return deviceIdRef.current
-    })
+    const devices = await RecordPlugin.getAvailableAudioDevices()
+    if (devices.length) {
+      deviceIdRef.current = devices[0].deviceId
+    }
+    console.log(
+      'getAvailableAudioDevice:',
+      devices,
+      'default deviceId: ',
+      deviceIdRef.current
+    )
+    return deviceIdRef.current
   }
 
   const onTogglePlay = () => {
-    if (WaveSurfer) wavesurferObject.current?.playPause()
+    wavesurferObject.current?.playPause()
   }
 
   const onToggleRecord = async () => {
-    console.log('onToggleRecord', recordRef.current)
-
     if (!recordRef.current) return
 
     if (recordRef.current.isRecording() || recordRef.current.isPaused()) {
@@ -88,25 +86,22 @@ export default function Record({
       url: recordedUrl
     })
 
-    wavesurferObject.current.on('play', () => {
-      setIsPlaying(true)
-    })
-
-    wavesurferObject.current.on('pause', () => {
-      setIsPlaying(false)
-    })
+    wavesurferObject.current.on('play', () => setIsPlaying(true))
+    wavesurferObject.current.on('pause', () => setIsPlaying(false))
 
     wavesurferObject.current.registerPlugin(
       TimelinePlugin.create({
         height: 12,
         timeInterval: 0.1,
         primaryLabelInterval: 1,
-        style: {
-          fontSize: '10px',
-          color: '#6A3274'
-        }
+        style: { fontSize: '10px', color: '#6A3274' }
       })
     )
+
+    wavesurferObject.current.on('click', () => {
+      wavesurferObject.current?.play()
+    })
+
     const record = wavesurferObject.current.registerPlugin(
       RecordPlugin.create({
         renderRecordedAudio: true,
@@ -128,17 +123,11 @@ export default function Record({
 
       if (recordDurationRef.current < 1) {
         console.warn('录音时间太短', recordDurationRef.current)
-
         onReset()
-        return Toast.fail({
-          duration: 300,
-          message: '录音时间太短, 请重录'
-        })
+        return Toast.fail({ duration: 300, message: '录音时间太短, 请重录' })
       }
 
-      onRecordEnd?.({
-        blob
-      })
+      onRecordEnd?.({ blob })
     })
 
     record.on('record-progress', (time) => {
@@ -147,7 +136,7 @@ export default function Record({
     })
 
     recordRef.current = record
-  }, [wavesurferObject])
+  }, [recordedUrl, onRecordStart, onRecordEnd])
 
   useEffect(() => {
     onReset()
