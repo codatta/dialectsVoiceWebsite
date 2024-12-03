@@ -80,9 +80,9 @@ export default function Dialect() {
       <Popup
         visible={visible}
         onClose={() => setVisible(false)}
-        className="w-full px-3 py-6"
+        className="w-full bg-transparent px-3 py-6"
       >
-        <div className="mx-auto w-full">
+        <div className="mx-auto w-full rounded-md bg-white px-3 py-6">
           <h1 className="mb-8 px-4 text-center text-lg text-gray-800">
             请选择方言
           </h1>
