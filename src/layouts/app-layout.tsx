@@ -33,7 +33,7 @@ export default function AppLayout() {
       </div>
       <Tabbar className="py-2" value={tabName} onChange={handleTabChange}>
         <Tabbar.Item name="/read" icon={<Mic />}>
-          朗读
+          体验录制
         </Tabbar.Item>
         <Tabbar.Item name="/monologue" icon={<AudioLines />}>
           自由录音
