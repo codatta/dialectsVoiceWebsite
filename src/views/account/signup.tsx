@@ -60,14 +60,21 @@ export default function UserFormPage() {
 
     const confirm = await Dialog.confirm({
       title: '提示',
-      message: '用户资料保存后不可更改，请再次确认',
+      message: (
+        <div className="mt-4">
+          用户资料保存后不可更改，请再次确认
+          <div className="mt-2 text-sm text-[red]">
+            注：方言信息在保存后仍可更新
+          </div>
+        </div>
+      ),
       confirmButtonText: '确认保存',
       cancelButtonText: '返回修改'
     })
 
     if (confirm) {
       try {
-        await userActions.saveUser(userInfo)
+        // await userActions.saveUser(userInfo)
 
         Toast.success('保存成功')
         setTimeout(() => {
