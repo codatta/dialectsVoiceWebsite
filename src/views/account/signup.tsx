@@ -74,7 +74,7 @@ export default function UserFormPage() {
 
     if (confirm) {
       try {
-        // await userActions.saveUser(userInfo)
+        await userActions.saveUser(userInfo)
 
         Toast.success('保存成功')
         setTimeout(() => {
